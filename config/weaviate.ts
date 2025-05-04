@@ -75,8 +75,6 @@ export async function queryImage(imageBuffer: Buffer) {
     .withLimit(1)
     .do();
       const result = resImage.data.Get.Images[0];
-
-      console.log('Query result:', result);
       return result;
     
   } catch (error) {

@@ -1,7 +1,9 @@
 import TelegramBot from 'node-telegram-bot-api';
 import * as dotenv from 'dotenv';
 import axios from 'axios';
-import { uploadFile , queryImage  } from "./weaviate";
+import { promises as fs } from 'fs';
+import path from 'path';
+import { queryImage } from '../config/weaviate.js'; 
 dotenv.config();
 
 interface FilePathResponse {
@@ -12,10 +14,21 @@ interface FilePathResponse {
   description?: string;
 }
 
-interface ProcessedImageResult {
-  embedding: number[];
-  // Add other properties as needed
+
+
+export async function readImageFromRoot(filename: string = 'face.jpg'): Promise<Buffer> {
+  const filePath = path.resolve(process.cwd(), filename);
+  
+  try {
+    const buffer = await fs.readFile(filePath);
+    return buffer;
+  } catch (error) {
+    console.error(`Error reading file ${filename} from root:`, error);
+    throw error;
+  }
 }
+
+
 
 // Get token from environment variables
 const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -72,16 +85,19 @@ function startBot(): void {
   
   bot.on('message', async (msg: TelegramBot.Message) => {
     const chatId = msg.chat.id;
+    await bot.sendPhoto(chatId ,await  readImageFromRoot(), { caption: 'Please send face-only photo' });
+
     
     if (msg.photo) {
       try {
-        await bot.sendMessage(chatId, "Processing your image...");
-        
+        await bot.sendMessage(chatId ,"Please wait while I process your image...");
         const photo = msg.photo[msg.photo.length - 1];
         const fileId = photo.file_id;
         const imageBuffer = await downloadImage(fileId);
         const similarImage = await queryImage(imageBuffer);
-        await bot.sendMessage(chatId, "Image uploaded successfully!");
+
+        await bot.sendMessage(chatId, "Cheking image quality ");
+        // const isFaceDetected = await detectFace(imageBuffer);
         await bot.sendMessage(chatId, "Querying similar images...");
         await bot.sendPhoto(chatId,  Buffer.from(deepDebugImage(similarImage), 'base64'));
         // const queryRes  = await queryImage(imageBuffer);
