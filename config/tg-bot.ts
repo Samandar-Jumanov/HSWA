@@ -5,6 +5,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { queryImage } from '../config/weaviate.js'; 
 import { joinImages } from "../utils/join-images.js"
+import { getBullyResponse } from '../config/openAI.js';
 dotenv.config();
 
 interface FilePathResponse {
@@ -86,10 +87,10 @@ function startBot(): void {
   
   bot.on('message', async (msg: TelegramBot.Message) => {
     const chatId = msg.chat.id;
-    await bot.sendPhoto(chatId ,await  readImageFromRoot(), { caption: 'Please send face-only photo' });
 
     
     if (msg.photo) {
+    await bot.sendPhoto(chatId ,await  readImageFromRoot(), { caption: 'Please send face-only photo' });
       try {
         await bot.sendMessage(chatId ,"Please wait while I process your image...");
         const photo = msg.photo[msg.photo.length - 1];
@@ -109,7 +110,7 @@ function startBot(): void {
         await bot.sendMessage(chatId, "Sorry, I couldn't process your image. Please try again later.");
       }
     } else {
-      await bot.sendMessage(chatId, "I do not accept text messages. If you want to check similarity, please send me an image.");
+      await bot.sendMessage(chatId, await getBullyResponse(msg.text!));
     }
   });
 }
