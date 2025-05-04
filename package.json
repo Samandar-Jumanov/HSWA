@@ -1,0 +1,47 @@
+{
+  "name": "human_simlarity_with_animal",
+  "version": "1.0.0",
+  "main": "dist/app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/src/app.js",
+    "dev": "npx tsx watch src/app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@pinecone-database/pinecone": "^5.1.2",
+    "@supabase/supabase-js": "^2.49.4",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-backend-wasm": "^4.22.0",
+    "@xenova/transformers": "^2.17.2",
+    "axios": "^1.9.0",
+    "body-parser": "^2.2.0",
+    "canvas": "^3.1.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "imgur": "^2.4.3",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemon": "^3.1.10",
+    "onnxruntime-node": "^1.21.1",
+    "openai": "^4.96.2",
+    "sharp": "^0.34.1",
+    "uuid": "^11.1.0",
+    "weaviate-client": "^3.5.3",
+    "weaviate-ts-client": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.15.3",
+    "@types/node-telegram-bot-api": "^0.64.5",
+    "@types/uuid": "^10.0.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.9.0",
+    "typescript": "^5.8.3"
+  }
+}
