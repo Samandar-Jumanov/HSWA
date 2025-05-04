@@ -74,8 +74,8 @@ export async function queryImage(imageBuffer: Buffer) {
     .withNearImage({ image: imageBuffer.toString('base64') })
     .withLimit(1)
     .do();
-      const result = resImage.data.Get.Images[0];
-      return result;
+      const result : any = resImage.data.Get.Images[0];
+      return result
     
   } catch (error) {
     console.error('Error querying image:', error);
