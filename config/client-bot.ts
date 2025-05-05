@@ -45,7 +45,6 @@ const userAds = loadData(ADS_FILE);
 const userSettings = loadData(USERS_FILE);
 
 export async function startClientBot() {
-  // Store user states (for multi-step interactions)
   const userStates = {};
   
   // Get text based on user language
@@ -69,7 +68,7 @@ export async function startClientBot() {
   }
 
   // Handle /start command
-  bot.onText(/\/start/, async (msg : TelegramBot.Message) => {
+  bot.onText(/\/start/, async (msg :any ) => {
     const chatId = msg.chat.id;
     const userId = msg?.from.id.toString();
     
@@ -87,7 +86,7 @@ export async function startClientBot() {
   });
 
   // Handle language change
-  bot.onText(/🌐.+language|🌐.+тил|🌐.+язык/i, async (msg) => {
+  bot.onText(/🌐.+language|🌐.+тил|🌐.+язык/i, async (msg : any ) => {
     const chatId = msg.chat.id;
     const userId = msg.from.id.toString();
     
@@ -109,7 +108,7 @@ export async function startClientBot() {
   });
 
   // Handle language selection
-  bot.onText(/🇬🇧 English|🇺🇿 O'zbekcha|🇷🇺 Русский/, async (msg) => {
+  bot.onText(/🇬🇧 English|🇺🇿 O'zbekcha|🇷🇺 Русский/, async (msg : any ) => {
     const chatId = msg.chat.id;
     const userId = msg.from.id.toString();
     const messageText = msg.text;
@@ -133,7 +132,7 @@ export async function startClientBot() {
   });
 
   // Handle the "Post a new ad" button (in multiple languages)
-  bot.on("message", async (msg) => {
+  bot.on("message", async (msg : any ) => {
     if (!msg.text) return;
     
     const chatId = msg.chat.id;
@@ -161,7 +160,7 @@ export async function startClientBot() {
     }
   });
 
-  bot.on("message", async (msg) => {
+  bot.on("message", async (msg : any ) => {
     if (!msg.text) return;
     
     const chatId = msg.chat.id;
@@ -209,7 +208,7 @@ export async function startClientBot() {
   });
 
   // Handle "Help" button (in multiple languages)
-  bot.on("message", async (msg) => {
+  bot.on("message", async (msg : any ) => {
     if (!msg.text) return;
     
     const chatId = msg.chat.id;
@@ -233,7 +232,7 @@ export async function startClientBot() {
   });
 
   // Handle "Cancel" button (in multiple languages)
-  bot.on("message", async (msg) => {
+  bot.on("message", async (msg : any ) => {
     if (!msg.text) return;
     
     const chatId = msg.chat.id;
@@ -257,7 +256,7 @@ export async function startClientBot() {
   });
 
   // Handle callback queries (for deleting ads)
-  bot.on('callback_query', async (query) => {
+  bot.on('callback_query', async (query : any ) => {
     const chatId = query.message.chat.id;
     const userId = query.from.id.toString();
     const data = query.data;
@@ -286,7 +285,7 @@ export async function startClientBot() {
   });
 
   // Handle regular messages
-  bot.on("message", async (msg) => {
+  bot.on("message", async (msg : any ) => {
     if (!msg.text) return;
     
     const chatId = msg.chat.id;
