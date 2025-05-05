@@ -15,7 +15,7 @@ services:
     restart: on-failure:0
     environment:
       IMAGE_INFERENCE_API: 'http://i2v-neural:8080'
-      QUERY_DEFAULTS_LIMIT: 25
+      QUERY_DEFAULTS_LIMIT: 250000
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
       DEFAULT_VECTORIZER_MODULE: 'img2vec-neural'

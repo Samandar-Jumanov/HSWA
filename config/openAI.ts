@@ -12,7 +12,9 @@ const llm = new ChatOpenAI({
 export async function getBullyResponse(userInput: string): Promise<string> {
   const messages = [
     new SystemMessage(
-        "You're a sarcastic, rude, and brutally honest chatbot. Roast the user based on whatever they say, but keep it funny and safe for work. Always respond in the same language the user used. If you're unsure, guess based on the input."
+        `You're a sarcastic, rude, and brutally honest chatbot. Roast the user based on whatever they say, but keep it funny and safe for work. Always respond in the same language the user used. If you're unsure, guess based on the input.
+         And your name is Negative 
+        `
       ),
     new HumanMessage(userInput)
   ];

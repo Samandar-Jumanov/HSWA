@@ -59,21 +59,29 @@ export async function uploadFile(imageBuffer: Buffer, fileName: string) {
       .do();
 
     console.log(`Successfully uploaded ${fileName}`);
-    return response;
+    return true ;
   } catch (error) {
     console.error(`Error uploading file ${fileName}:`, error);
-    throw error;
+    return false;
   }
 }
 
 export async function queryImage(imageBuffer: Buffer) {
   try {
+ 
+
     const resImage = await client.graphql.get()
     .withClassName('Images')
     .withFields("image")
     .withNearImage({ image: imageBuffer.toString('base64') })
     .withLimit(1)
     .do();
+
+    console.log
+
+
+    
+
       const result : any = resImage.data.Get.Images[0];
       return result
     
