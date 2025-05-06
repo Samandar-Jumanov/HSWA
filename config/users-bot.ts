@@ -6,6 +6,7 @@ import path from 'path';
 import { queryImage } from '../config/weaviate.js'; 
 import { joinImages } from "../utils/join-images.js"
 import { getBullyResponse } from '../config/openAI.js';
+
 dotenv.config();
 
 interface FilePathResponse {

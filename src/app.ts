@@ -4,10 +4,29 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import { startBot  } from "../config/users-bot"
 // Load environment variables
+import path from 'path';
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+
+ 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'pages', 'index.html'));
+});
+
+
+//pages directory
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'pages', 'index.html'));
+});
+
+ 
+
+app.get("/gallary", (req, res) => {
+  res.sendFile(path.join(__dirname, 'pages', 'gallary.html'))
+});
 
 
 
