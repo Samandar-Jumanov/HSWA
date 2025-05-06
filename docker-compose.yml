@@ -1,4 +1,5 @@
----
+version: '3.8'
+
 services:
   weaviate:
     command:
@@ -21,8 +22,46 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'img2vec-neural'
       ENABLE_MODULES: 'img2vec-neural'
       CLUSTER_HOSTNAME: 'node1'
+      # Add a longer startup timeout to wait for the i2v-neural service
+      STARTUP_TIMEOUT: '60s'
+    depends_on:
+      i2v-neural:
+        condition: service_started
+  
   i2v-neural:
     image: cr.weaviate.io/semitechnologies/img2vec-pytorch:resnet50
     environment:
       ENABLE_CUDA: '0'
-...
+    # Using wget for health check as it's more commonly available in base images
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/.well-known/ready || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+  
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - WEAVIATE_URL=http://weaviate:8080
+      # Add your environment variables here or use env_file
+    env_file:
+      - .env
+    depends_on:
+      weaviate:
+        condition: service_started
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./src:/app/src  # For hot-reloading in development
+      - ./public:/app/public # For static files if needed
+    # Add a simple TCP connection check as a health check
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

@@ -2,8 +2,9 @@ import weaviate from 'weaviate-ts-client';
 
 const client = weaviate.client({
     scheme: 'http',
-    host: 'localhost:8080',
+    host: 'weaviate:8080',
 });
+
 
 export async function createSchema() {
   try {
@@ -47,13 +48,13 @@ export async function uploadFile(imageBuffer: Buffer, fileName: string) {
     if (!exists) {
       console.log('Class does not exist, creating schema first...');
       await createSchema();
-    }
+     }
     
     console.log(`Uploading ${fileName}...`);
     const response = await client.data.creator()
       .withClassName('Images')
       .withProperties({
-        image: imageBuffer.toString('base64'),
+        image: imageBuffer,
         text: fileName
       })
       .do();

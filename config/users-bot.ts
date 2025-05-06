@@ -61,9 +61,9 @@ const bot = new TelegramBot(token, { polling: true });
     const fileResponse = await axios.get(fileUrl, { responseType: 'arraybuffer' });
 
     return Buffer.from(fileResponse.data);
-  } catch (error) {
-    console.error('Error downloading image:', error);
-    throw error;
+  } catch (error : any ) {
+    console.error('Error downloading image:', error.message);
+    throw error
   }
 }
 
