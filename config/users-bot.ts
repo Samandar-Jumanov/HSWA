@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { queryImage } from '../config/weaviate.js'; 
+import { queryImage, uploadFile } from '../config/weaviate.js'; 
 import { joinImages } from "../utils/join-images.js"
 import { getBullyResponse } from '../config/openAI.js';
 
@@ -93,6 +93,11 @@ function startBot(): void {
         const photo = msg.photo[msg.photo.length - 1];
         const fileId = photo.file_id;
         const imageBuffer = await downloadImage(fileId);
+        const uploadedImage = await uploadFile(imageBuffer, 'panda.jpg');
+        if(!uploadedImage) {
+          await bot.sendMessage(chatId, "Sorry, I couldn't upload your image. Please try again later.");
+          return;
+        }
         const similarImage = await queryImage(imageBuffer)
         console.log('Image downloaded queried !');
 
@@ -100,12 +105,11 @@ function startBot(): void {
         console.log('Image joined !');
         await bot.sendMessage(chatId, "Querying similar images...");
         await bot.sendPhoto(chatId,  joinedImage);
-        const queryRes  = await queryImage(imageBuffer);
       } catch (error) {
         console.error('Error processing image:', error);
         await bot.sendMessage(chatId, "Sorry, I couldn't process your image. Please try again later.");
       }
-    } else {
+    } else { 
       await bot.sendMessage(chatId, await getBullyResponse(msg.text!));
     }
 

@@ -1,8 +1,8 @@
 import weaviate from 'weaviate-ts-client';
 
-const client = weaviate.client({
+export const client = weaviate.client({
     scheme: 'http',
-    host: 'weaviate:8080',
+    host: 'localhost:8080',
 });
 
 
@@ -54,7 +54,7 @@ export async function uploadFile(imageBuffer: Buffer, fileName: string) {
     const response = await client.data.creator()
       .withClassName('Images')
       .withProperties({
-        image: imageBuffer,
+        image: imageBuffer.toString('base64'), // Convert buffer to base64 string
         text: fileName
       })
       .do();
@@ -77,11 +77,6 @@ export async function queryImage(imageBuffer: Buffer) {
     .withNearImage({ image: imageBuffer.toString('base64') })
     .withLimit(1)
     .do();
-
-    console.log
-
-
-    
 
       const result : any = resImage.data.Get.Images[0];
       return result
