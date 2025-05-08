@@ -1,0 +1,68 @@
+services:
+  - type: web
+    name: telegram-bot-app
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: standard
+    envVars:
+      - key: TELEGRAM_BOT_USER_TOKEN
+        sync: false
+      - key: TELEGRAM_BOT_ADMIN_TOKEN
+        sync: false
+      - key: TELEGRAM_BOT_CLIENT_TOKEN
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: WEAVIATE_URL
+        value: http://weaviate-service:8080
+      - key: WEAVIATE_API_KEY
+        sync: false
+      - key: FACE_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: AUTHORIZED_ADMIN
+        sync: false
+      - key: PORT
+        value: 10000
+        
+  - type: web
+    name: weaviate-service
+    env: docker
+    dockerCommand: |
+      --host 0.0.0.0 --port 8080 --scheme http
+    dockerfilePath: ./weaviate.Dockerfile
+    plan: standard
+    envVars:
+      - key: IMAGE_INFERENCE_API
+        value: http://i2v-neural-service:8080
+      - key: QUERY_DEFAULTS_LIMIT
+        value: 250000
+      - key: AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED
+        value: "true"
+      - key: PERSISTENCE_DATA_PATH
+        value: /var/lib/weaviate
+      - key: DEFAULT_VECTORIZER_MODULE
+        value: img2vec-neural
+      - key: ENABLE_MODULES
+        value: img2vec-neural
+      - key: CLUSTER_HOSTNAME
+        value: node1
+      - key: STARTUP_TIMEOUT
+        value: 60s
+    disk:
+      name: weaviate-data
+      mountPath: /var/lib/weaviate
+      sizeGB: 10
+        
+  - type: web
+    name: i2v-neural-service
+    env: docker
+    dockerfilePath: ./i2v-neural.Dockerfile
+    plan: standard
+    envVars:
+      - key: ENABLE_CUDA
+        value: "0"
+    healthCheckPath: /.well-known/ready

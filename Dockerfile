@@ -32,8 +32,11 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Expose the port your app runs on
-EXPOSE 3000
+# Set the port that Render will use
+ENV PORT=10000
 
-# Command to run the application (development mode for hot-reloading)
+# Expose the PORT
+EXPOSE ${PORT}
+
+# Command to run the application
 CMD ["npm", "run", "dev"]
