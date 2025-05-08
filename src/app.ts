@@ -2,13 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import { startBot  } from "../config/users-bot"
-// import path from 'path';
-import { client, getAllImages } from '../config/weaviate';
-// import galleryRouter  from './routes/galleryRouter';
-// import helmet from 'helmet';
-// import cors from 'cors';
-// import rateLimit from 'express-rate-limit';
-// import { authRouter } from './routes/auth';
+import { client } from '../config/weaviate';
 import { startAdminBot } from "../config/admin-bot."
 
 
@@ -26,32 +20,6 @@ declare global {
 const app = express();
 const port = process.env.PORT || 3000;
 
-// // pages 
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'pages', 'index.html'));
-// });
-
-// app.get("/gallary", (req, res) => {
-//   res.sendFile(path.join(__dirname, 'pages', 'gallary.html'))
-// });
-
-// Routes 
-// app.use("/files/upload" , galleryRouter );
-// app.use("/login" , authRouter);
-
-// // Use 
-// app.use(helmet()); // Security headers
-// app.use(cors()); // CORS configuration
-// app.use(express.json()); // Parse JSON bodies
-
-// // Rate limiting
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 100, // Limit each IP to 100 requests per windowMs
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-// app.use(limiter);
 
 app.use(bodyParser.json());
 app.get('/health', (req, res) => {
