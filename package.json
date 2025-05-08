@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node dist/src/app.js",
-    "dev": "npx tsx watch src/app.ts"
+    "dev": "nodemon --watch src --exec tsx src/app.ts"
   },
   "keywords": [],
   "author": "",
