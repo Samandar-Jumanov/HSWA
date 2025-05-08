@@ -86,3 +86,24 @@ export async function queryImage(imageBuffer: Buffer) {
     throw error;
   }
 }
+
+
+
+export const getAllImages = async  () => {
+
+    try {
+      const allImages  = await client.graphql.get()
+      .withClassName("Images")
+      .withFields("image text")
+      .withLimit(1000)
+      .do();
+
+
+    return allImages.data.Get.Images;
+
+      
+    } catch (error) {
+      console.log(error);
+      throw error;      
+    }
+}

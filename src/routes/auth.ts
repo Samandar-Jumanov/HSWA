@@ -21,6 +21,7 @@ const generateToken = (userId: number): string => {
     secretKey,
     { expiresIn: '24h' } // Token expires in 24 hours
   );
+  
 };
 
 // Login route

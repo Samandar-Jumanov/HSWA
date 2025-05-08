@@ -3,7 +3,7 @@ import multer from 'multer';
 import { uploadFile } from '../../config/weaviate';
 import { authMiddleware } from '../middlewares/authMiddlewares';
 
-const uploadFileRouter = express.Router();
+const galleryRouter  = express.Router();
 
 // Use memory storage instead of disk storage
 const storage = multer.memoryStorage();
@@ -27,7 +27,7 @@ const upload = multer({
 });
 
 // Handle file upload
-uploadFileRouter.post('/upload',   upload.single('image'), authMiddleware(["admin"]),  async (req: any, res: any) => {
+galleryRouter .post('/upload',   upload.single('image'), authMiddleware(["admin"]),  async (req: any, res: any) => {
   try {
     // Check if file exists
     if (!req.file) {
@@ -69,7 +69,7 @@ uploadFileRouter.post('/upload',   upload.single('image'), authMiddleware(["admi
 });
 
 // Error handler for multer errors
-uploadFileRouter.use((err : any , req : any , res : any , next : any ) => {
+galleryRouter .use((err : any , req : any , res : any , next : any ) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
@@ -90,4 +90,4 @@ uploadFileRouter.use((err : any , req : any , res : any , next : any ) => {
   });
 });
 
-export default uploadFileRouter;
+export default galleryRouter ;

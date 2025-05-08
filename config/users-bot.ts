@@ -3,19 +3,13 @@ import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { queryImage, uploadFile } from '../config/weaviate.js'; 
+import { queryImage } from '../config/weaviate.js'; 
 import { joinImages } from "../utils/join-images.js"
 import { getBullyResponse } from '../config/openAI.js';
+import { downloadImage } from '../utils/downloadTgImage.js';
 
 dotenv.config();
 
-interface FilePathResponse {
-  ok: boolean;
-  result: {
-    file_path: string;
-  };
-  description?: string;
-}
 
 export async function readImageFromRoot(filename: string = 'face.jpg'): Promise<Buffer> {
   const filePath = path.resolve(process.cwd(), filename);
@@ -41,42 +35,6 @@ if (!token) {
 
 const bot = new TelegramBot(token, { polling: true });
 
-/**
- * Downloads an image from Telegram servers using file ID
- * @param fileId The ID of the file to download
- * @returns A Buffer containing the image data
- */
- async function downloadImage(fileId: string): Promise<Buffer> {
-  try {
-    const filePathResponse = await axios.get<FilePathResponse>(
-      `https://api.telegram.org/bot${token}/getFile?file_id=${fileId}`
-    );
-    
-    if (!filePathResponse.data.ok) {
-      throw new Error(`Failed to get file path: ${filePathResponse.data.description}`);
-    }
-    
-    const filePath = filePathResponse.data.result.file_path;
-    
-    const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
-    const fileResponse = await axios.get(fileUrl, { responseType: 'arraybuffer' });
-
-    return Buffer.from(fileResponse.data);
-  } catch (error : any ) {
-    console.error('Error downloading image:', error.message);
-    throw error
-  }
-}
-
-/**
- * Process image to prepare it for embedding
- * @param imageBuffer Buffer containing the image data
- * @returns Processed image buffer
-
-
-/**
- * Start the Telegram bot and listen for messages
- */
 
 
 function startBot(): void {
@@ -92,12 +50,8 @@ function startBot(): void {
         await bot.sendMessage(chatId ,"Please wait while I process your image...");
         const photo = msg.photo[msg.photo.length - 1];
         const fileId = photo.file_id;
-        const imageBuffer = await downloadImage(fileId);
-        const uploadedImage = await uploadFile(imageBuffer, 'panda.jpg');
-        if(!uploadedImage) {
-          await bot.sendMessage(chatId, "Sorry, I couldn't upload your image. Please try again later.");
-          return;
-        }
+        const imageBuffer = await downloadImage(fileId , token );
+      
         const similarImage = await queryImage(imageBuffer)
         console.log('Image downloaded queried !');
 
@@ -112,7 +66,6 @@ function startBot(): void {
     } else { 
       await bot.sendMessage(chatId, await getBullyResponse(msg.text!));
     }
-
     
   });
   
