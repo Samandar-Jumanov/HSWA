@@ -2,7 +2,7 @@ import weaviate from 'weaviate-ts-client';
 
 export const client = weaviate.client({
     scheme: 'http',
-    host: 'weaviate-service:8080',
+    host: 'localhost:8080',
 });
 
 
