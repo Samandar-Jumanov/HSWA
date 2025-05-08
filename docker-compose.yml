@@ -1,17 +1,43 @@
+version: '3.8'
+
 services:
+  nodejs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - TELEGRAM_BOT_USER_TOKEN=${TELEGRAM_BOT_USER_TOKEN}
+      - TELEGRAM_BOT_ADMIN_TOKEN=${TELEGRAM_BOT_ADMIN_TOKEN}
+      - TELEGRAM_BOT_CLIENT_TOKEN=${TELEGRAM_BOT_CLIENT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - WEAVIATE_URL=http://weaviate:8080
+      - WEAVIATE_API_KEY=${WEAVIATE_API_KEY}
+      - FACE_API_KEY=${FACE_API_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - AUTHORIZED_ADMIN=${AUTHORIZED_ADMIN}
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - weaviate
+
   weaviate:
     command:
-    - --host
-    - 0.0.0.0
-    - --port
-    - '8080'
-    - --scheme
-    - http
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
     image: cr.weaviate.io/semitechnologies/weaviate:1.30.0
     ports:
-    - 8080:8080
-    - 50051:50051
-    restart: on-failure:0
+      - 8080:8080
+      - 50051:50051
+    restart: on-failure:10
     environment:
       IMAGE_INFERENCE_API: 'http://i2v-neural:8080'
       QUERY_DEFAULTS_LIMIT: 250000
@@ -20,21 +46,23 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'img2vec-neural'
       ENABLE_MODULES: 'img2vec-neural'
       CLUSTER_HOSTNAME: 'node1'
-      # Add a longer startup timeout to wait for the i2v-neural service
       STARTUP_TIMEOUT: '60s'
     depends_on:
       i2v-neural:
         condition: service_started
-  
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+
   i2v-neural:
     image: cr.weaviate.io/semitechnologies/img2vec-pytorch:resnet50
     environment:
       ENABLE_CUDA: '0'
-    # Using wget for health check as it's more commonly available in base images
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/.well-known/ready || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 60s
-  
+
+volumes:
+  weaviate_data:
